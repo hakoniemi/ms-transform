@@ -1,0 +1,266 @@
+<PUBLIC:ATTACH EVENT="onmouseover" ONEVENT="IE_CSS3.mouseenter()" />
+<PUBLIC:ATTACH EVENT="oncontentready" ONEVENT="IE_CSS3.init()" />
+<PUBLIC:ATTACH EVENT="onmouseout" ONEVENT="IE_CSS3.mouseleave()" />
+<script language="JScript">
+IE_CSS3	=
+{
+	index	: 0,
+	iTransInterval	: 50,
+	
+	prefix	: (!!~navigator.appVersion.indexOf("6.0")) ? "ms" : "-ms",
+	
+	init	: function()
+	{
+		IE_CSS3.setOpacity();
+		IE_CSS3.transform();
+	},
+	
+	mouseenter	: function()
+	{
+		setTimeout(function()
+		{
+			IE_CSS3.setOpacity();
+			IE_CSS3.transform();
+		},1);
+	},
+	
+	mouseleave	: function()
+	{
+		setTimeout(function()
+		{
+			IE_CSS3.setOpacity();
+			IE_CSS3.transform();
+		},1);
+	},
+	
+	getTransform	: function()
+	{
+		return(currentStyle[IE_CSS3.prefix +"-transform"]);
+
+	},
+	
+	setOpacity	: function()
+	{
+		if (typeof element.currentStyle["opacity"] != "undefined")
+		{
+			var iOpac	= parseInt(element.currentStyle["opacity"] * 100);
+			
+			if (!isNaN(iOpac))
+			{
+				if (!~element.style.filter.indexOf("Alpha"))
+				{
+					element.style.filter	=  "progid:DXImageTransform.Microsoft.Alpha(Opacity="+ iOpac +"), "+ element.currentStyle.filter;
+				}
+				else
+				{
+					element.style.filter	= element.style.filter.replace(/Opacity=\d*/i, "Opacity="+ iOpac);
+				}
+			}
+				
+		}
+		else
+		{
+			if (!~element.style.filter.indexOf("Alpha"))
+			{
+				element.style.filter	=  "progid:DXImageTransform.Microsoft.Alpha(Opacity=100), "+ element.currentStyle.filter;
+			}
+			else
+			{
+				element.style.filter	= element.style.filter.replace(/Opacity=\d*/i, "Opacity=100");
+			}
+		}
+	},
+	
+	setBoxShadow	: function()
+	{
+		if (typeof element.currentStyle["box-shadow"] != "undefined")
+		{
+		}
+	},
+	
+	applyMatrix	: function()
+	{
+		element.style.filter	= "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand'), "+ element.currentStyle.filter;
+	},
+	
+	positionRelative	: function()
+	{
+		element.origPos	= element.currentStyle.position;
+
+		if (element.origPos != "absolute")
+		{
+			element.style.position	= "relative";
+		}
+
+	},
+	
+	positionBack	: function()
+	{
+		element.style.position	= element.origPos;
+	},
+
+	transform	: function()
+	{
+		var sTrans	= IE_CSS3.getTransform(),		
+			sSition	= [];
+			
+		if (typeof sTrans == "undefined")
+		{
+			return false;
+		}
+
+		// FOR HANDLING TRANSITIONS:
+		sSition['prop']	= currentStyle[IE_CSS3.prefix +"-transition-property"] || "all";
+		sSition['dur']	= parseFloat(currentStyle[IE_CSS3.prefix +"-transition-duration"]) || 0;
+		
+		var aTemp	= currentStyle[IE_CSS3.prefix +"-transition"];
+
+		if (typeof aTemp != "undefined")
+		{
+			aTemp	= aTemp.split(" ");
+				
+			if (aTemp.length)
+			{
+				sSition['prop']	= aTemp[0] || "all";
+				sSition['dur']	= parseFloat(aTemp[1]) || 0;
+			}
+		}
+
+		sTrans	= sTrans.replace(", ", ",");	// THIS TRIMS SPACES BETWEEN COMMA SEPARATED VALUES
+		
+		var aTrans	= sTrans.split(" ");	// IN CASE THERE ARE MULTIPLE TRANSFORMATIONS DECLARED
+
+		for (var iI=0, iL=aTrans.length; iI<iL; iI++)
+		{
+			var aValues	= aTrans[iI].match(/(\w|\,|\.)+/gim);
+			
+			if (aValues.length)
+			{
+				switch (aValues[0])
+				{
+					case "rotate":
+					{
+						var iDeg	= parseInt(aValues[1]);
+						if (isNaN(iDeg))
+							return false;
+							
+						IE_CSS3.positionRelative();
+						IE_CSS3.applyMatrix();
+							
+						if (!!sSition['dur'] && (sSition['prop'] == "rotate" || sSition['prop'] == "all"))
+						{
+							var iDur	= parseInt(sSition['dur'] * 1000);
+							
+							IE_CSS3.rotateWithTransition(iDeg, iDur);
+						}
+						else
+						{
+							IE_CSS3.rotate(iDeg);
+						}
+						
+						break;
+					}
+					
+					case "scale":
+					{
+						var aDims	=  aValues[1].split(",");
+						
+						if (!isNaN(aDims[0]) && !isNaN(aDims[1]))
+						{
+							IE_CSS3.positionRelative();
+							IE_CSS3.applyMatrix();
+
+							IE_CSS3.scale(aDims[0],aDims[1]);
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	parseStyles	: function()
+	{
+		var aCSS	= element.document.styleSheets;
+		var rgHover	= new RegExp("\#"+ element.id +"\:hover", "gi");
+		
+		for(var iI=0;iI < aCSS.length; iI++)
+		{
+			var aRules	= aCSS[iI].rules;
+			
+			for (var iA=0;iA < aRules.length; iA++)
+			{
+				if (rgHover.test(aRules[iA].selectorText))
+				{
+					//alert(aRules[iA].style.cssText);
+				}
+			}
+		}
+	},
+
+	rotate	: function(iDeg)
+	{
+		var rad = iDeg * (Math.PI * 2 / 360);
+    	
+    	var costheta = Math.cos(rad);
+    	var sintheta = Math.sin(rad);
+    	
+    	element.scaleX	= element.scaleX || 1;
+    	element.scaleY	= element.scaleY || 1;
+    	
+    	var oItem	= element.filters.item(0);
+    	
+    	oItem.M11 = costheta * element.scaleX;
+    	oItem.M12 = -sintheta * element.scaleX;
+    	oItem.M21 = sintheta * element.scaleY;
+    	oItem.M22 = costheta * element.scaleY;
+
+	},
+	
+	scale	: function(iX, iY)
+	{
+		element.scaleX	= iX;
+		element.scaleY	= iY;
+		oItem	= element.filters.item(0);
+		
+		oItem.M11 *= element.scaleX;
+    	oItem.M22 *= element.scaleY;
+    	
+    	IE_CSS3.positionBack();
+	},
+	
+	
+	rotateWithTransition	: function(iDeg, iDur)
+	{
+		var iDegPerDur	= parseInt(iDeg / (iDur / IE_CSS3.iTransInterval));
+		var iModPerDur	= iDeg / (iDur / IE_CSS3.iTransInterval) % 1;
+
+		var iDurPerDeg	= parseInt(iDur / iDeg) * 5;
+
+		element.iDeg	= iDeg;
+		element.iProg	= 0;
+		element.iModTotal	= 0;
+		
+		element.ivRotate	= setInterval(function()
+		{
+			element.iProg += iDegPerDur;
+			element.iModTotal	+= iModPerDur;
+			
+			if (element.iModTotal >= 1)
+			{
+				element.iProg += 1;
+				element.iModTotal -= 1;
+			}
+			
+			if (element.iProg <= element.iDeg)
+			{
+				IE_CSS3.rotate(element.iProg);
+			}
+			else
+			{
+				clearInterval(element.ivRotate);
+				IE_CSS3.positionBack();
+			}
+		}, IE_CSS3.iTransInterval);
+	}
+};
+</script>
