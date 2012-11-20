@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+        <title>ms-transform.htc</title>
+        <style type="text/css">
+        .box {
+            behavior:url(ms-transform.htc);
+            display:block;
+            width:100px;
+            height:100px;
+            padding:20px;
+            margin:75px 0px 0px 50px;
+            border:1px solid #202020;
+            background-color:#F0F0F0;
+            text-decoration:none;
+            color:#000000;
+            font:normal 14px arial, helvetica, sans-serif;
+        }
+        .box:hover {background-color:#FFFFFF;color:#000000;}
+        .box:visited {color:#000000;}
+        
+        #one    {
+            -moz-transform:rotate(45deg);
+            -webkit-transform:rotate(45deg);
+            -o-transform:rotate(45deg);
+            -ms-transform:rotate(45deg);
+            transform:rotate(45deg);
+        }
+
+        #two    {
+            -moz-transform:rotate(10deg);
+            -webkit-transform:rotate(10deg);
+            -o-transform:rotate(10deg);
+            -ms-transform:rotate(10deg);
+            transform:rotate(10deg);
+        }
+        
+        #two:hover  {
+            -moz-transform:rotate(45deg);
+            -webkit-transform:rotate(45deg);
+            -o-transform:rotate(45deg);
+            -ms-transform:rotate(45deg);
+            transform:rotate(45deg);
+        }
+        
+        #three {
+            opacity:0.25;
+        }
+        
+        #scale {
+            -moz-transform:scale(1.5, 1.5);
+            -webkit-transform:scale(1.5, 1.5);
+            -o-transform:scale(1.5, 1.5);
+            -ms-transform:scale(1.5, 1.5);
+            transform:scale(1.5, 1.5);
+        }
+        </style>
+
+    <!--[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    </head>
+    <body>
+        <div id="wrapper" class="demo">
+            <section id="content">
+                <header id="content-header">
+                    <h1>ms-transform.htc</h1>
+                </header>
+        
+                <section id="main">
+                    <div id="one" class="box">This is 45deg -rotated element.</div>
+                    <div id="two" class="box">This is 10deg -rotated element, which rotates to 45deg when hovered.</div>
+                    <div id="three" class="box">Opacity set to 25%.</div>
+                    <div id="scale" class="box">Scaled to 1.5</div>
+                </section>
+            </section>
+        </div>
+    </body>
+</html>

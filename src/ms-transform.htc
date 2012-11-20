@@ -138,21 +138,6 @@ var msTransform = (function() {
             }
         },
     
-        parseStyles: function() {
-            var aCSS = element.document.styleSheets;
-            var rgHover = new RegExp("\#" + element.id + "\:hover", "gi");
-    
-            for (var iI = 0; iI < aCSS.length; iI++) {
-                var aRules = aCSS[iI].rules;
-    
-                for (var iA = 0; iA < aRules.length; iA++) {
-                    if (rgHover.test(aRules[iA].selectorText)) {
-                        //alert(aRules[iA].style.cssText);
-                    }
-                }
-            }
-        },
-    
         rotate: function(iDeg) {
             var rad = iDeg * (Math.PI * 2 / 360);
     
