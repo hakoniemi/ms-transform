@@ -31,14 +31,14 @@ var msTransform = (function() {
         },
     
         setOpacity: function() {
-            if ( typeof element.currentStyle["opacity"] != "undefined") {
-                var iOpac = parseInt(element.currentStyle["opacity"] * 100);
-    
-                if (!isNaN(iOpac)) {
+            if (element.currentStyle.opacity) {
+                var opacity = parseInt(element.currentStyle.opacity * 100);
+                
+                if (!isNaN(opacity)) {
                     if (!~element.style.filter.indexOf("Alpha")) {
-                        element.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + iOpac + "), " + element.currentStyle.filter;
+                        element.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + opacity + "), " + element.currentStyle.filter;
                     } else {
-                        element.style.filter = element.style.filter.replace(/Opacity=\d*/i, "Opacity=" + iOpac);
+                        element.style.filter = element.style.filter.replace(/Opacity=\d*/i, "Opacity=" + opacity);
                     }
                 }
             } else {
