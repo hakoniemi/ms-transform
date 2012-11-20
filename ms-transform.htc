@@ -1,0 +1,198 @@
+<PUBLIC:ATTACH EVENT="onmouseover" ONEVENT="msTransform.mouseenter()" />
+<PUBLIC:ATTACH EVENT="oncontentready" ONEVENT="msTransform.init()" />
+<PUBLIC:ATTACH EVENT="onmouseout" ONEVENT="msTransform.mouseleave()" />
+<script language="JScript">
+var msTransform = (function() {
+    var iTransInterval = 50,
+    prefix = "-ms";
+
+    return {
+        init: function() {
+            msTransform.setOpacity();
+            msTransform.transform();
+        },
+    
+        mouseenter: function() {
+            window.setTimeout(function() {
+                msTransform.setOpacity();
+                msTransform.transform();
+            }, 1);
+        },
+    
+        mouseleave: function() {
+            window.setTimeout(function() {
+                msTransform.setOpacity();
+                msTransform.transform();
+            }, 1);
+        },
+    
+        getTransform: function() {
+            return (element.currentStyle[prefix + "-transform"]);
+        },
+    
+        setOpacity: function() {
+            if (element.currentStyle.opacity) {
+                var opacity = parseInt(element.currentStyle.opacity * 100);
+                
+                if (!isNaN(opacity)) {
+                    if (!~element.style.filter.indexOf("Alpha")) {
+                        element.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + opacity + "), " + element.currentStyle.filter;
+                    } else {
+                        element.style.filter = element.style.filter.replace(/Opacity=\d*/i, "Opacity=" + opacity);
+                    }
+                }
+            } else {
+                if (!~element.style.filter.indexOf("Alpha")) {
+                    element.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=100), " + element.currentStyle.filter;
+                } else {
+                    element.style.filter = element.style.filter.replace(/Opacity=\d*/i, "Opacity=100");
+                }
+            }
+        },
+    
+        setBoxShadow: function() {
+            if ( typeof element.currentStyle["box-shadow"] != "undefined") {
+            }
+        },
+    
+        applyMatrix: function() {
+            element.style.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand'), " + element.currentStyle.filter;
+        },
+    
+        positionRelative: function() {
+            element.origPos = element.currentStyle.position;
+    
+            if (element.origPos != "absolute") {
+                element.style.position = "relative";
+            }
+        },
+    
+        positionBack: function() {
+            element.style.position = element.origPos;
+        },
+    
+        transform: function() {
+            var sTrans = msTransform.getTransform(), sSition = [];
+    
+            if ( typeof sTrans == "undefined") {
+                return false;
+            }
+    
+            // FOR HANDLING TRANSITIONS:
+            sSition['prop'] = currentStyle[prefix + "-transition-property"] || "all";
+            sSition['dur'] = parseFloat(currentStyle[prefix + "-transition-duration"]) || 0;
+    
+            var aTemp = currentStyle[prefix + "-transition"];
+    
+            if (typeof aTemp != "undefined") {
+                aTemp = aTemp.split(" ");
+    
+                if (aTemp.length) {
+                    sSition['prop'] = aTemp[0] || "all";
+                    sSition['dur'] = parseFloat(aTemp[1]) || 0;
+                }
+            }
+    
+            sTrans = sTrans.replace(", ", ",");
+            // THIS TRIMS SPACES BETWEEN COMMA SEPARATED VALUES
+    
+            var aTrans = sTrans.split(" ");
+            // IN CASE THERE ARE MULTIPLE TRANSFORMATIONS DECLARED
+    
+            for (var iI = 0, iL = aTrans.length; iI < iL; iI++) {
+                var aValues = aTrans[iI].match(/(\w|\,|\.)+/gim);
+    
+                if (aValues.length) {
+                    switch (aValues[0]) {
+                        case "rotate": {
+                            var iDeg = parseInt(aValues[1]);
+                            if (isNaN(iDeg))
+                                return false;
+    
+                            msTransform.positionRelative();
+                            msTransform.applyMatrix();
+    
+                            if (!!sSition['dur'] && (sSition['prop'] == "rotate" || sSition['prop'] == "all")) {
+                                var iDur = parseInt(sSition['dur'] * 1000);
+    
+                                msTransform.rotateWithTransition(iDeg, iDur);
+                            } else {
+                                msTransform.rotate(iDeg);
+                            }
+    
+                            break;
+                        }
+    
+                        case "scale": {
+                            var aDims = aValues[1].split(",");
+    
+                            if (!isNaN(aDims[0]) && !isNaN(aDims[1])) {
+                                msTransform.positionRelative();
+                                msTransform.applyMatrix();
+    
+                                msTransform.scale(aDims[0], aDims[1]);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    
+        rotate: function(iDeg) {
+            var rad = iDeg * (Math.PI * 2 / 360);
+    
+            var costheta = Math.cos(rad);
+            var sintheta = Math.sin(rad);
+    
+            element.scaleX = element.scaleX || 1;
+            element.scaleY = element.scaleY || 1;
+    
+            var oItem = element.filters.item(0);
+    
+            oItem.M11 = costheta * element.scaleX;
+            oItem.M12 = -sintheta * element.scaleX;
+            oItem.M21 = sintheta * element.scaleY;
+            oItem.M22 = costheta * element.scaleY;
+        },
+    
+        scale: function(iX, iY) {
+            element.scaleX = iX;
+            element.scaleY = iY;
+            oItem = element.filters.item(0);
+    
+            oItem.M11 *= element.scaleX;
+            oItem.M22 *= element.scaleY;
+    
+            msTransform.positionBack();
+        },
+    
+        rotateWithTransition: function(iDeg, iDur) {
+            var iDegPerDur = parseInt(iDeg / (iDur / iTransInterval));
+            var iModPerDur = iDeg / (iDur / iTransInterval) % 1;
+    
+            var iDurPerDeg = parseInt(iDur / iDeg) * 5;
+    
+            element.iDeg = iDeg;
+            element.iProg = 0;
+            element.iModTotal = 0;
+    
+            element.ivRotate = setInterval(function() {
+                element.iProg += iDegPerDur;
+                element.iModTotal += iModPerDur;
+    
+                if (element.iModTotal >= 1) {
+                    element.iProg += 1;
+                    element.iModTotal -= 1;
+                }
+    
+                if (element.iProg <= element.iDeg) {
+                    msTransform.rotate(element.iProg);
+                } else {
+                    clearInterval(element.ivRotate);
+                    msTransform.positionBack();
+                }
+            }, iTransInterval);
+        }
+    };
+}());
+</script>
