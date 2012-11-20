@@ -1,37 +1,37 @@
-<PUBLIC:ATTACH EVENT="onmouseover" ONEVENT="IE_CSS3.mouseenter()" />
-<PUBLIC:ATTACH EVENT="oncontentready" ONEVENT="IE_CSS3.init()" />
-<PUBLIC:ATTACH EVENT="onmouseout" ONEVENT="IE_CSS3.mouseleave()" />
+<PUBLIC:ATTACH EVENT="onmouseover" ONEVENT="msTransform.mouseenter()" />
+<PUBLIC:ATTACH EVENT="oncontentready" ONEVENT="msTransform.init()" />
+<PUBLIC:ATTACH EVENT="onmouseout" ONEVENT="msTransform.mouseleave()" />
 <script language="JScript">
-IE_CSS3	= {
-    index : 0,
-    iTransInterval : 50,
+msTransform	= {
+    index: 0,
+    iTransInterval: 50,
 
-    prefix : (!!~navigator.appVersion.indexOf("6.0")) ? "ms" : "-ms",
+    prefix: (!!~navigator.appVersion.indexOf("6.0")) ? "ms": "-ms",
 
-    init : function() {
-        IE_CSS3.setOpacity();
-        IE_CSS3.transform();
+    init: function() {
+        msTransform.setOpacity();
+        msTransform.transform();
     },
 
-    mouseenter : function() {
+    mouseenter: function() {
         window.setTimeout(function() {
-            IE_CSS3.setOpacity();
-            IE_CSS3.transform();
+            msTransform.setOpacity();
+            msTransform.transform();
         }, 1);
     },
 
-    mouseleave : function() {
+    mouseleave: function() {
         setTimeout(function() {
-            IE_CSS3.setOpacity();
-            IE_CSS3.transform();
+            msTransform.setOpacity();
+            msTransform.transform();
         }, 1);
     },
 
-    getTransform : function() {
-        return (currentStyle[IE_CSS3.prefix + "-transform"]);
+    getTransform: function() {
+        return (currentStyle[msTransform.prefix + "-transform"]);
     },
 
-    setOpacity : function() {
+    setOpacity: function() {
         if ( typeof element.currentStyle["opacity"] != "undefined") {
             var iOpac = parseInt(element.currentStyle["opacity"] * 100);
 
@@ -51,16 +51,16 @@ IE_CSS3	= {
         }
     },
 
-    setBoxShadow : function() {
+    setBoxShadow: function() {
         if ( typeof element.currentStyle["box-shadow"] != "undefined") {
         }
     },
 
-    applyMatrix : function() {
+    applyMatrix: function() {
         element.style.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand'), " + element.currentStyle.filter;
     },
 
-    positionRelative : function() {
+    positionRelative: function() {
         element.origPos = element.currentStyle.position;
 
         if (element.origPos != "absolute") {
@@ -68,22 +68,22 @@ IE_CSS3	= {
         }
     },
 
-    positionBack : function() {
+    positionBack: function() {
         element.style.position = element.origPos;
     },
 
-    transform : function() {
-        var sTrans = IE_CSS3.getTransform(), sSition = [];
+    transform: function() {
+        var sTrans = msTransform.getTransform(), sSition = [];
 
         if ( typeof sTrans == "undefined") {
             return false;
         }
 
         // FOR HANDLING TRANSITIONS:
-        sSition['prop'] = currentStyle[IE_CSS3.prefix + "-transition-property"] || "all";
-        sSition['dur'] = parseFloat(currentStyle[IE_CSS3.prefix + "-transition-duration"]) || 0;
+        sSition['prop'] = currentStyle[msTransform.prefix + "-transition-property"] || "all";
+        sSition['dur'] = parseFloat(currentStyle[msTransform.prefix + "-transition-duration"]) || 0;
 
-        var aTemp = currentStyle[IE_CSS3.prefix + "-transition"];
+        var aTemp = currentStyle[msTransform.prefix + "-transition"];
 
         if (typeof aTemp != "undefined") {
             aTemp = aTemp.split(" ");
@@ -110,15 +110,15 @@ IE_CSS3	= {
                         if (isNaN(iDeg))
                             return false;
 
-                        IE_CSS3.positionRelative();
-                        IE_CSS3.applyMatrix();
+                        msTransform.positionRelative();
+                        msTransform.applyMatrix();
 
                         if (!!sSition['dur'] && (sSition['prop'] == "rotate" || sSition['prop'] == "all")) {
                             var iDur = parseInt(sSition['dur'] * 1000);
 
-                            IE_CSS3.rotateWithTransition(iDeg, iDur);
+                            msTransform.rotateWithTransition(iDeg, iDur);
                         } else {
-                            IE_CSS3.rotate(iDeg);
+                            msTransform.rotate(iDeg);
                         }
 
                         break;
@@ -128,10 +128,10 @@ IE_CSS3	= {
                         var aDims = aValues[1].split(",");
 
                         if (!isNaN(aDims[0]) && !isNaN(aDims[1])) {
-                            IE_CSS3.positionRelative();
-                            IE_CSS3.applyMatrix();
+                            msTransform.positionRelative();
+                            msTransform.applyMatrix();
 
-                            IE_CSS3.scale(aDims[0], aDims[1]);
+                            msTransform.scale(aDims[0], aDims[1]);
                         }
                     }
                 }
@@ -139,7 +139,7 @@ IE_CSS3	= {
         }
     },
 
-    parseStyles : function() {
+    parseStyles: function() {
         var aCSS = element.document.styleSheets;
         var rgHover = new RegExp("\#" + element.id + "\:hover", "gi");
 
@@ -154,7 +154,7 @@ IE_CSS3	= {
         }
     },
 
-    rotate : function(iDeg) {
+    rotate: function(iDeg) {
         var rad = iDeg * (Math.PI * 2 / 360);
 
         var costheta = Math.cos(rad);
@@ -172,7 +172,7 @@ IE_CSS3	= {
 
     },
 
-    scale : function(iX, iY) {
+    scale: function(iX, iY) {
         element.scaleX = iX;
         element.scaleY = iY;
         oItem = element.filters.item(0);
@@ -180,12 +180,12 @@ IE_CSS3	= {
         oItem.M11 *= element.scaleX;
         oItem.M22 *= element.scaleY;
 
-        IE_CSS3.positionBack();
+        msTransform.positionBack();
     },
 
-    rotateWithTransition : function(iDeg, iDur) {
-        var iDegPerDur = parseInt(iDeg / (iDur / IE_CSS3.iTransInterval));
-        var iModPerDur = iDeg / (iDur / IE_CSS3.iTransInterval) % 1;
+    rotateWithTransition: function(iDeg, iDur) {
+        var iDegPerDur = parseInt(iDeg / (iDur / msTransform.iTransInterval));
+        var iModPerDur = iDeg / (iDur / msTransform.iTransInterval) % 1;
 
         var iDurPerDeg = parseInt(iDur / iDeg) * 5;
 
@@ -203,12 +203,12 @@ IE_CSS3	= {
             }
 
             if (element.iProg <= element.iDeg) {
-                IE_CSS3.rotate(element.iProg);
+                msTransform.rotate(element.iProg);
             } else {
                 clearInterval(element.ivRotate);
-                IE_CSS3.positionBack();
+                msTransform.positionBack();
             }
-        }, IE_CSS3.iTransInterval);
+        }, msTransform.iTransInterval);
     }
 };
 </script>
