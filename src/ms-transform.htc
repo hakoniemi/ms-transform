@@ -3,7 +3,7 @@
 <PUBLIC:ATTACH EVENT="onmouseout" ONEVENT="msTransform.mouseleave()" />
 <script language="JScript">
 var msTransform = (function() {
-    var iTransInterval = 50,
+    var transitionInterval = 20,
     prefix = "-ms";
 
     return {
@@ -167,8 +167,8 @@ var msTransform = (function() {
         },
     
         rotateWithTransition: function(iDeg, iDur) {
-            var iDegPerDur = parseInt(iDeg / (iDur / iTransInterval));
-            var iModPerDur = iDeg / (iDur / iTransInterval) % 1;
+            var iDegPerDur = parseInt(iDeg / (iDur / transitionInterval));
+            var iModPerDur = iDeg / (iDur / transitionInterval) % 1;
     
             var iDurPerDeg = parseInt(iDur / iDeg) * 5;
     
@@ -191,7 +191,7 @@ var msTransform = (function() {
                     clearInterval(element.ivRotate);
                     msTransform.positionBack();
                 }
-            }, iTransInterval);
+            }, transitionInterval);
         }
     };
 }());
