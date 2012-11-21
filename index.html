@@ -29,33 +29,54 @@
         <hr>
 
         <section id="main_content">
+            <h1>Overview</h1>
+            <p>ms-transform.htc is a JavaScript plugin written for Internet Explorer 7, 8 and 9.</p>
+            <p>The goal of ms-transform.htc is to append CSS3 Transforms, transitions and other common CSS properties for Internet Explorer, which aren't supported in older versions.</p>
+            
+            <h1>Usage</h1>
+            <p>ms-transform.htc is applied with following CSS Rule:</p>
+<pre>
+element {
+    behavior: url(ms-transform.htc);
+}
+</pre>                
             <h1>Examples</h1>
             
             <h2>Rotation</h2>
-            ```CSS
-            #rotated-one {
-                behavior: url(ms-transform.htc);
-                -ms-transform: rotate(45deg);
-            }
-            ```
+            
+<pre>
+#rotated-one {
+    -ms-transform: rotate(45deg);
+}
+</pre>
             <div id="rotated-one" class="box">This is 45deg -rotated element.</div>
 
-            ```CSS
-            #rotated-two {
-                behavior: url(ms-transform.htc);
-                -ms-transform: rotate(10deg);
-            }
+<pre>
+#rotated-two {
+    -ms-transform: rotate(10deg);
+}
 
-            #rotated-two:hover {
-                -ms-transform: rotate(45deg);
-            }
-            ```
+#rotated-two:hover {
+    -ms-transform: rotate(45deg);
+}
+</pre>
             <div id="rotated-two" class="box">This is 10deg -rotated element, which rotates to 45deg when hovered.</div>
             
             <h2>Opacity</h2>
-            <div id="opacity" class="box">Opacity set to 25%.</div>
+<pre>
+#opacity {
+    opacity:0.75;
+}
+</pre>
+            <div id="opacity" class="box">Opacity set to 75%.</div>
             
             <h2>Scaling</h2>
+<pre>
+#scale {
+    -ms-transform: scale(1.5, 1.5);
+}
+</pre>
+
             <div id="scale" class="box">Scaled to 1.5</div>
         </section>
 

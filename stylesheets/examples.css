@@ -4,12 +4,15 @@
     width: 100px;
     height: 100px;
     padding: 20px;
-    margin:50px 0px 75px 25px;
     border: 1px solid #202020;
-    background-color: #F0F0F0;
+    background-color: #E4F0FF;
     text-decoration: none;
     color: #000000;
     font: normal 14px arial, helvetica, sans-serif;
+
+    position:relative;
+    left:490px;
+    top:-152px;
 }
 .box:hover {
     background-color: #FFFFFF;
@@ -25,6 +28,7 @@
     -o-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+    
 }
 
 #rotated-two {
@@ -33,6 +37,9 @@
     -o-transform: rotate(10deg);
     -ms-transform: rotate(10deg);
     transform: rotate(10deg);
+
+
+    top:-195px;
 }
 
 #rotated-two:hover {
@@ -44,7 +51,7 @@
 }
 
 #opacity {
-    opacity: 0.25;
+    opacity: 0.75;
 }
 
 #scale {
