@@ -1,10 +1,10 @@
 .box {
-    behavior: url(../ms-transform.htc);
+    behavior: url(ms-transform.htc);
     display: block;
     width: 100px;
     height: 100px;
     padding: 20px;
-    margin: 75px 0px 0px 50px;
+    margin:50px 0px 75px 25px;
     border: 1px solid #202020;
     background-color: #F0F0F0;
     text-decoration: none;
@@ -19,7 +19,7 @@
     color: #000000;
 }
 
-#one {
+#rotated-one {
     -moz-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     -o-transform: rotate(45deg);
@@ -27,7 +27,7 @@
     transform: rotate(45deg);
 }
 
-#two {
+#rotated-two {
     -moz-transform: rotate(10deg);
     -webkit-transform: rotate(10deg);
     -o-transform: rotate(10deg);
@@ -35,7 +35,7 @@
     transform: rotate(10deg);
 }
 
-#two:hover {
+#rotated-two:hover {
     -moz-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     -o-transform: rotate(45deg);
@@ -43,7 +43,7 @@
     transform: rotate(45deg);
 }
 
-#three {
+#opacity {
     opacity: 0.25;
 }
 
