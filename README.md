@@ -5,10 +5,9 @@
 
 ## Supported Features
 * -ms-transform:rotate(),
-* opacity
-
-## Partially Supported Features
 * -ms-transform:scale()
+* opacity
+* box-shadow
 
 ## Examples
 Examples can be found from the [Project Page](http://zvona.github.com/ms-transform/)

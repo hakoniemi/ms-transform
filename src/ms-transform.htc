@@ -36,7 +36,7 @@ var msTransform = (function() {
     positionRelative = function() {
         element.origPos = element.currentStyle.position;
     
-        if (element.origPos != "absolute") {
+        if (element.origPos !== "absolute") {
             element.style.position = "relative";
         }
     }
@@ -81,7 +81,6 @@ var msTransform = (function() {
                 rotate(element.iProg);
             } else {
                 clearInterval(element.ivRotate);
-                positionBack();
             }
         }, transitionInterval);
     }
@@ -93,8 +92,9 @@ var msTransform = (function() {
     
         oItem.M11 *= element.scaleX;
         oItem.M22 *= element.scaleY;
-    
-        positionBack();
+        
+        oItem.Dx = -36.0;
+        oItem.Dy = -36.0;
     }
 
     setBoxShadow = function() {
@@ -156,6 +156,22 @@ var msTransform = (function() {
                 element.style.filter = element.style.filter.replace(/Opacity=\d*/i, "Opacity=100");
             }
         }
+    }
+    
+    setTransformOrigin = function() {
+        if (!element.origMarginLeft) {
+            element.origMarginLeft = element.currentStyle.marginLeft;
+        }
+        
+        if (!element.origMarginTop) {
+            element.origMarginTop = element.currentStyle.marginTop;
+        }
+
+        var currentX = parseInt(element.origMarginLeft, 10);
+        var currentY = parseInt(element.origMarginTop, 10);
+        
+        element.style.marginLeft = currentX - element.offsetWidth/4;
+        element.style.marginTop = currentY - element.offsetHeight/4;
     }            
    
 
@@ -181,11 +197,11 @@ var msTransform = (function() {
             }
         }
     
-        sTrans = sTrans.replace(", ", ",");
         // THIS TRIMS SPACES BETWEEN COMMA SEPARATED VALUES
+        sTrans = sTrans.replace(", ", ",");
     
-        var aTrans = sTrans.split(" ");
         // IN CASE THERE ARE MULTIPLE TRANSFORMATIONS DECLARED
+        var aTrans = sTrans.split(" ");
     
         for (var iI = 0, iL = aTrans.length; iI < iL; iI++) {
             var aValues = aTrans[iI].match(/(\w|\,|\.)+/gim);
@@ -197,9 +213,10 @@ var msTransform = (function() {
                         if (isNaN(iDeg))
                             return false;
     
-                        positionRelative();
                         applyMatrix();
-    
+                        positionRelative();
+                        setTransformOrigin();
+
                         if (!!sSition['dur'] && (sSition['prop'] == "rotate" || sSition['prop'] == "all")) {
                             var iDur = parseInt(sSition['dur'] * 1000);
     
@@ -215,9 +232,11 @@ var msTransform = (function() {
                         var aDims = aValues[1].split(",");
     
                         if (!isNaN(aDims[0]) && !isNaN(aDims[1])) {
-                            positionRelative();
+
                             applyMatrix();
-    
+                            positionRelative();
+                            setTransformOrigin();
+
                             scale(aDims[0], aDims[1]);
                         }
                     }
